@@ -27,7 +27,7 @@ vector<Process>& System::Processes() {
     if (std::find_if(processes_.begin(), processes_.end(), [&](Process& p) {
           return p.Pid() == i;
         }) == processes_.end())
-      processes_.emplace_back(Process(i));
+      processes_.emplace_back(i);
   }
 
   // remove killed process

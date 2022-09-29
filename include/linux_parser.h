@@ -62,7 +62,7 @@ enum ProcessStats {
   kStime_ = 14,
   kChildUtime_ = 15,
   kChildStime_ = 16,
-  kUpTime_ = 21,
+  kStartTime_ = 21,
 };
 
 std::string Command(int pid);
@@ -70,7 +70,7 @@ std::string Ram(int pid);
 std::string Uid(int pid);
 std::string User(int pid);
 std::vector<std::string> ProcessStats(int pid);
-long int UpTime(int pid);
+long int StartTime(int pid);
 };  // namespace LinuxParser
 
 #endif

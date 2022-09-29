@@ -248,11 +248,11 @@ vector<string> LinuxParser::ProcessStats(int pid) {
   return stats;
 }
 
-// Read and return the uptime of a process
-long LinuxParser::UpTime(int pid) {
+// Read and return the start time of a process
+long LinuxParser::StartTime(int pid) {
   long time = 0;
   vector<string> stats = ProcessStats(pid);
-  if (stats.size() > ProcessStats::kUpTime_)
-    time = stoi(stats[ProcessStats::kUpTime_]) / sysconf(_SC_CLK_TCK);
+  if (stats.size() > ProcessStats::kStartTime_)
+    time = stoi(stats[ProcessStats::kStartTime_]) / sysconf(_SC_CLK_TCK);
   return time;
 }

@@ -15,7 +15,7 @@ using std::vector;
 Process::Process(int p) : pid(p) {
   user = LinuxParser::User(pid);
   command = LinuxParser::Command(pid);
-  startTime = LinuxParser::UpTime(pid);
+  startTime = LinuxParser::StartTime(pid);
 }
 
 // Return this process's ID
@@ -26,18 +26,17 @@ float Process::CpuUtil() const { return cpuUtil; }
 
 // Return this process's CPU utilization
 float Process::CpuUtilization() {
-  long sysUpTime = LinuxParser::UpTime();
   vector<string> stats = LinuxParser::ProcessStats(pid);
-  // Compute CPU Utilization as total time CPU sent on the process / elapsed
-  // time since the process started
+  // Compute CPU Utilization as total time CPU sent on the process / process up
+  // time
   if (stats.size() > 0) {
     long totalTime = stoi(stats[LinuxParser::ProcessStats::kUtime_]) +
                      stoi(stats[LinuxParser::ProcessStats::kStime_]) +
                      stoi(stats[LinuxParser::ProcessStats::kChildUtime_]) +
                      stoi(stats[LinuxParser::ProcessStats::kChildStime_]);
     totalTime = totalTime / sysconf(_SC_CLK_TCK);
-    float elapsedTime = sysUpTime - startTime;
-    if (elapsedTime > 0) cpuUtil = totalTime / elapsedTime;
+    float upTime = UpTime();
+    if (upTime > 0) cpuUtil = totalTime / upTime;
   }
   return cpuUtil;
 }
@@ -52,7 +51,10 @@ string Process::Ram() { return LinuxParser::Ram(pid); }
 string Process::User() { return user; }
 
 // Return the age of this process (in seconds)
-long int Process::UpTime() { return startTime; }
+long int Process::UpTime() {
+  long sysUpTime = LinuxParser::UpTime();
+  return sysUpTime - startTime;
+}
 
 // Overload the "less than" comparison operator for Process objects
 bool Process::operator<(Process const& a) const {
